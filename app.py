@@ -123,6 +123,13 @@ AZURE_OPENAI_SYSTEM_MESSAGE = os.environ.get(
     "AZURE_OPENAI_SYSTEM_MESSAGE",
     "You are an AI assistant that helps people find information.",
 )
+
+NOVELIS_PROMPT_TEMPLATE  = os.environ.get(
+    "NOVELIS_PROMPT_TEMPLATE",
+    "Start the answer saying 'My name is Mary'. {}",
+)
+
+
 AZURE_OPENAI_PREVIEW_API_VERSION = os.environ.get(
     "AZURE_OPENAI_PREVIEW_API_VERSION",
     MINIMUM_SUPPORTED_AZURE_OPENAI_PREVIEW_API_VERSION,
@@ -730,9 +737,20 @@ def prepare_model_args(request_body, request_headers):
     if not SHOULD_USE_DATA:
         messages = [{"role": "system", "content": AZURE_OPENAI_SYSTEM_MESSAGE}]
 
+    last_user_message = None
     for message in request_messages:
         if message:
-            messages.append({"role": message["role"], "content": message["content"]})
+            new_message = {"role": message["role"], "content": message["content"]}
+            messages.append(new_message)
+            if new_message["role"] == "user":
+                last_user_message = new_message
+                print(f"last user message: {new_message}")
+    
+    if last_user_message is not None and "content" in last_user_message:
+        print(f"Content before '{last_user_message['content']}'")
+        print(f"template: {NOVELIS_PROMPT_TEMPLATE}")
+        last_user_message["content"] = NOVELIS_PROMPT_TEMPLATE.format(last_user_message["content"])
+        print(last_user_message["content"])
 
     user_json = None
     if (MS_DEFENDER_ENABLED):
