@@ -1,0 +1,1 @@
+az webapp config set --resource-group infa-dev --name llm-safety-analytics-web-app --startup-file "uvicorn app:app --host 0.0.0.0 --port 8000"

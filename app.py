@@ -124,7 +124,7 @@ AZURE_OPENAI_SYSTEM_MESSAGE = os.environ.get(
     "You are an AI assistant that helps people find information.",
 )
 
-NOVELIS_PROMPT_TEMPLATE  = os.environ.get(
+NOVELIS_PROMPT_TEMPLATE = os.environ.get(
     "NOVELIS_PROMPT_TEMPLATE",
     "Start the answer saying 'My name is Mary'. {}",
 )
